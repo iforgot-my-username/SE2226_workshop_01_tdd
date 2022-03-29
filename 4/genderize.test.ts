@@ -57,80 +57,128 @@ describe('genderize.io', () => {
                 gender: null,
                 probability: 0,
                 count: 0
-            }
+            }, 70
             )).toBeUndefined()
         })
-        it('works for male', () => {
+        it('works for male, default posibility cutoff', () => {
             expect(getGender({
                 name: "sam",
                 gender: "male",
                 probability: 0.81,
                 count: 96261
-            }
+            }, 70
             )).toBe(Gender.male)
         })
-        it('works for unisex', () => {
+        it('works for unisex, default posibility cutoff', () => {
             expect(getGender({
                 name: "blue",
                 gender: "male",
                 probability: 0.65,
                 count: 6756
-            }
+            }, 70
             )).toBe(Gender.unisex)
         })
-        it('works for female', () => {
+        it('works for male 60% posibility cutoff', () => {
             expect(getGender({
-                name: "maria",
-                gender: "female",
-                probability: 0.98,
-                count: 334287
-            }
-            )).toBe(Gender.female)
+                name: "blue",
+                gender: "male",
+                probability: 0.65,
+                count: 6756
+            }, 60
+            )).toBe(Gender.male)
         })
-        it('works for unisex', () => {
+        it('works for female 50% posibility cutoff', () => {
             expect(getGender({
                 name: "gin",
                 gender: "female",
                 probability: 0.53,
                 count: 1547
-            }
+            }, 50
+            )).toBe(Gender.female)
+        })
+        it('works for unisex 90% posibility cutoff', () => {
+            expect(getGender({
+                name: "sam",
+                gender: "male",
+                probability: 0.81,
+                count: 96261
+            }, 90
+            )).toBe(Gender.unisex)
+        })
+        it('works for female, default posibility cutoff', () => {
+            expect(getGender({
+                name: "maria",
+                gender: "female",
+                probability: 0.98,
+                count: 334287
+            }, 70
+            )).toBe(Gender.female)
+        })
+        it('works for unisex, default posibility cutoff', () => {
+            expect(getGender({
+                name: "gin",
+                gender: "female",
+                probability: 0.53,
+                count: 1547
+            }, 70
             )).toBe(Gender.unisex)
         })
     })
 
 
     describe("genderize", () => {
-        test('Genderize male name: John', () => {
+        test('Genderize male name: John, default posibility cutoff', () => {
             expect.assertions(1);
             return genderize('john')
                 .then((data) => {
                     expect(data).toBe(Gender.male)
                 })
         })
-        test('Genderize Invaild name', () => {
+        test('Genderize Invaild name, default posibility cutoff', () => {
             expect.assertions(1);
             return genderize('sdkfjadskgjewrewrwe')
                 .then((data) => {
                     expect(data).toBeUndefined()
                 })
         })
-        test('Genderize unisex(male) name: Blue', () => {
+        test('Genderize name: Blue, default posibility cutoff = unisex', () => {
             expect.assertions(1);
             return genderize('blue')
                 .then((data) => {
                     expect(data).toBe(Gender.unisex)
                 })
         })
-        test('Genderize female name: Maria', () => {
+        test('Genderize name: Blue, 60% posibility cutoff', () => {
+            expect.assertions(1);
+            return genderize('blue', 60)
+                .then((data) => {
+                    expect(data).toBe(Gender.male)
+                })
+        })
+        test('Genderize female name: Maria, default posibility cutoff', () => {
             expect.assertions(1);
             return genderize('maria')
                 .then((data) => {
                     expect(data).toBe(Gender.female)
                 })
         })
-        test('Genderize unisex(female) name: Gin', () => {
+        test('Genderize name: Gin, default posibility  cutoff= unisex', () => {
             expect.assertions(1);
             return genderize('gin')
+                .then((data) => {
+                    expect(data).toBe(Gender.unisex)
+                })
+        })
+        test('Genderize name: Gin, 50% posibility cutoff', () => {
+            expect.assertions(1);
+            return genderize('gin', 50)
+                .then((data) => {
+                    expect(data).toBe(Gender.female)
+                })
+        })
+        test('Genderize female name: Maria, 90% posibility cutoff', () => {
+            expect.assertions(1);
+            return genderize('sam', 90)
                 .then((data) => {
                     expect(data).toBe(Gender.unisex)
                 })

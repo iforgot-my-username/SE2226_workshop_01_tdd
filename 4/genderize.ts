@@ -15,19 +15,19 @@ export async function fetchGenderize(name: string): Promise<GenderizeModel> {
 
 }
 
-export function getGender(genderizeResponse: GenderizeModel): Gender | undefined {
+export function getGender(genderizeResponse: GenderizeModel, cutoff: number): Gender | undefined {
     const { gender, probability } = genderizeResponse;
     if (!gender) {
         return undefined
 
-    } else if (probability >= 0.7) {
+    } else if (probability >= cutoff / 100) {
         return gender === 'male' ? Gender.male : Gender.female
     }
     return Gender.unisex
 }
 
-export default async function genderize(name: string) {
+export default async function genderize(name: string, cutoff: number = 70) {
     return fetchGenderize(name)
-        .then((resObj) => getGender(resObj))
+        .then((resObj) => getGender(resObj, cutoff))
 
 }
